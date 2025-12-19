@@ -1,11 +1,10 @@
 import configProd from './prod.js'
 import configDev from './dev.js'
 
-export var config
+export let config
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.DB_MODE === 'atlas') {
     config = configProd
 } else {
     config = configDev
 }
-config.isGuestMode = true

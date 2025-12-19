@@ -21,7 +21,17 @@
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "cryptr": "^6.3.0",
-        "express": "^5.1.0",
-        "mongodb": "^6.16.0"
-    }
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "mongodb": "^6.21.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yahavmor/mister-backend.git"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/yahavmor/mister-backend/issues"
+    },
+    "homepage": "https://github.com/yahavmor/mister-backend#readme"
 }

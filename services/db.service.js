@@ -1,34 +1,33 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, ServerApiVersion } from "mongodb";
+import dotenv from "dotenv";
 
-import { config } from '../config/index.js'
+dotenv.config();
+
+const uri = process.env.MONGO_URI;
+
+export const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+export async function connectDB() {
+  try {
+    await client.connect();
+    console.log("✅ Connected to MongoDB Atlas");
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    throw err;
+  }
+}
 
 export const dbService = {
-	getCollection,
-}
-
-var dbConn = null
+  getCollection
+};
 
 async function getCollection(collectionName) {
-	try {
-		const db = await _connect()
-		const collection = await db.collection(collectionName)
-		return collection
-	} catch (err) {
-		logger.error('Failed to get Mongo collection', err)
-		throw err
-	}
-}
-
-async function _connect() {
-	if (dbConn) return dbConn
-	try {
-		// const client = await MongoClient.connect(config.dbURL, { useUnifiedTopology: true })
-		const client = await MongoClient.connect(config.dbURL)
-		const db = client.db(config.dbName)
-		dbConn = db
-		return db
-	} catch (err) {
-		logger.error('Cannot Connect to DB', err)
-		throw err
-	}
+  const db = client.db(process.env.DB_NAME);
+  return db.collection(collectionName);
 }
