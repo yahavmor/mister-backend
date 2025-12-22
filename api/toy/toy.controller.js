@@ -60,7 +60,7 @@ export async function removeToy(req, res) {
         res.status(500).send({ err: 'Failed to remove toy' })
     }
 }
-
+        
 export async function addToyMsg(req, res) {
     const { loggedinUser } = req
     try {
