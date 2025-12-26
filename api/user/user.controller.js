@@ -45,3 +45,13 @@ export async function updateUser(req, res) {
         res.status(500).send({ err: 'Failed to update user' })
     }
 }
+
+export async function getUserMsgs(req, res) {
+    try {
+        const userId = req.params.id
+        const msgs = await userService.getUserMsgs(userId)
+        res.json(msgs)
+    } catch (err) {
+        res.status(500).send('Failed to get user messages')
+    }
+}

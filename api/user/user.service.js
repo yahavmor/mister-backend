@@ -10,6 +10,7 @@ export const userService = {
 	remove,
 	update,
 	add,
+	getUserMsgs
 }
 
 async function query(filterBy = {}) {
@@ -120,3 +121,31 @@ function _buildCriteria(filterBy) {
 	}
 	return criteria
 }
+
+
+
+async function getUserMsgs(userId) {
+    const collection = await dbService.getCollection('toy')
+
+    const toys = await collection.find({
+        "msgs.by._id": ObjectId.createFromHexString(userId)
+    }).toArray()
+
+    const msgs = []
+
+    toys.forEach(toy => {
+        toy.msgs?.forEach(msg => {
+            if (msg.by._id.toString() === userId) {
+                msgs.push({
+                    toyId: toy._id,
+                    toyName: toy.name,
+                    txt: msg.txt,
+                    createdAt: msg.createdAt
+                })
+            }
+        })
+    })
+
+    return msgs
+}
+

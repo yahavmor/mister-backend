@@ -15,15 +15,6 @@ const cryptr = new Cryptr(process.env.SECRET1 || 'Secret-Puk-1234')
 
 async function login(username, password) {
     logger.debug(`auth.service - login with username: ${username}`)
-
-    if (username === 'ADMIN' && password === 'ADMIN') {
-        return { 
-            _id: 'admin', 
-            username: 'ADMIN',
-            fullname: 'Administrator', 
-            isAdmin: true 
-        }
-    }
     const user = await userService.getByUsername(username)
     if (!user) throw new Error('Invalid username or password')
 
