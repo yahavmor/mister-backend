@@ -10,11 +10,9 @@ dotenv.config()
 
 const app = express()
 
-// Middleware
 app.use(cookieParser())
 app.use(express.json())
 
-// CORS for development
 const corsOptions = {
     origin: [
         'http://localhost:5173',
@@ -26,7 +24,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
-// Routes
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { toyRoutes } from './api/toy/toy.routes.js'
@@ -34,9 +31,10 @@ import { toyRoutes } from './api/toy/toy.routes.js'
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/toy', toyRoutes)
+app.use('/api/review', reviewRoutes)
 
+    
 const port = process.env.PORT || 3030
 app.listen(port, () => {
     console.log('Backend running on port:', port)
 })
-app.use('/api/review', reviewRoutes)

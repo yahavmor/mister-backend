@@ -85,7 +85,7 @@ async function update(toy) {
 async function addToyMsg(toyId, msg) {
     try {
         msg.id = utilService.makeId()
-
+        msg.createdAt = Date.now()
         const collection = await dbService.getCollection('toy')
         await collection.updateOne(
             { _id: ObjectId.createFromHexString(toyId) },
@@ -98,16 +98,14 @@ async function addToyMsg(toyId, msg) {
     }
 }
 
+
 async function removeToyMsg(toyId, msgId) {
-    try {
-        const collection = await dbService.getCollection('toy')
-        await collection.updateOne(
-            { _id: ObjectId.createFromHexString(toyId) },
-            { $pull: { msgs: { id: msgId } } }
-        )
-        return msgId
-    } catch (err) {
-        logger.error(`cannot remove toy msg ${toyId}`, err)
-        throw err
-    }
+    const collection = await dbService.getCollection('toy')
+    await collection.updateOne(
+        { _id: ObjectId.createFromHexString(toyId) },
+        { $pull: { msgs: { id: msgId } } }
+    )
 }
+
+
+
