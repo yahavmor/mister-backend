@@ -1,8 +1,9 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import dotenv from 'dotenv'
 import { reviewRoutes } from './api/review/review.routes.js'
+import dotenv from 'dotenv'
+
 
 
 
@@ -35,6 +36,8 @@ app.use('/api/review', reviewRoutes)
 
     
 const port = process.env.PORT || 3030
+console.log('ENV:', process.env.NODE_ENV)
+
 app.listen(port, () => {
     console.log('Backend running on port:', port)
 })

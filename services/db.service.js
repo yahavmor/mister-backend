@@ -1,24 +1,18 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
-import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+import { config } from "../config/index.js";
+import dotenv from 'dotenv'
+dotenv.config()
 
-dotenv.config();
+console.log('DB URL:', config.dbURL)
 
-const uri = process.env.MONGO_URI;
-
-export const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+export const client = new MongoClient(config.dbURL);
 
 export async function connectDB() {
   try {
     await client.connect();
-    console.log("✅ Connected to MongoDB Atlas");
+    console.log("Connected to DB:", config.dbURL);
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("DB connection error:", err);
     throw err;
   }
 }
@@ -28,6 +22,6 @@ export const dbService = {
 };
 
 async function getCollection(collectionName) {
-  const db = client.db(process.env.DB_NAME);
+  const db = client.db(config.dbName);
   return db.collection(collectionName);
 }

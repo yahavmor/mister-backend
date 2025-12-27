@@ -1,10 +1,9 @@
-import configProd from './prod.js'
-import configDev from './dev.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
-export let config
+import dev from './dev.js'
+import prod from './prod.js'
 
-if (process.env.DB_MODE === 'atlas') {
-    config = configProd
-} else {
-    config = configDev
-}
+export const config = process.env.NODE_ENV === 'production'
+  ? prod
+  : dev
