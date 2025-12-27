@@ -14,11 +14,26 @@ export const toyService = {
     removeToyMsg,
 }
 
-async function query(filterBy = { txt: '' }) {
+async function query(filterBy = {}) {
     try {
-        const criteria = {
-            name: { $regex: filterBy.txt, $options: 'i' },
+        const criteria = {}
+
+        if (filterBy.name) {
+            criteria.name = { $regex: filterBy.name, $options: 'i' }
         }
+
+        if (filterBy.price) {
+            criteria.price = { $gte: +filterBy.price }
+        }
+
+        if (filterBy.inStock) {
+            criteria.inStock = true
+        }
+
+        if (filterBy.labels && filterBy.labels.length > 0) {
+            criteria.labels = { $all: filterBy.labels }
+        }
+
         const collection = await dbService.getCollection('toy')
         const toys = await collection.find(criteria).toArray()
         return toys
@@ -27,6 +42,7 @@ async function query(filterBy = { txt: '' }) {
         throw err
     }
 }
+
 
 async function getById(toyId) {
     try {

@@ -42,19 +42,19 @@ async function query(filterBy = {}) {
         {
             $project: {
                 txt: 1,
-                user: {
+                byUser: {
                     _id: '$user._id',
                     fullname: '$user.fullname'
                 },
-            toy: {
-                _id: '$toy._id',
-                name: '$toy.name',
-                price: '$toy.price',
-                imgUrl: '$toy.imgUrl'  
-            }
-
+                toy: {
+                    _id: '$toy._id',
+                    name: '$toy.name',
+                    price: '$toy.price',
+                    imgUrl: '$toy.imgUrl'
+                }
             }
         }
+
     ]).toArray()
 
     return reviews

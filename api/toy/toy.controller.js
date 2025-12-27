@@ -4,8 +4,12 @@ import { logger } from '../../services/logger.service.js'
 export async function getToys(req, res) {
     try {
         const filterBy = {
-            txt: req.query.txt || '',
+            name: req.query.name || '',
+            price: req.query.price || '',
+            labels: req.query.labels ? req.query.labels.split(',') : [],
+            inStock: req.query.inStock === 'true'
         }
+
         const toys = await toyService.query(filterBy)
         res.json(toys)
     } catch (err) {
@@ -13,6 +17,7 @@ export async function getToys(req, res) {
         res.status(500).send({ err: 'Failed to get toys' })
     }
 }
+
 
 export async function getToyById(req, res) {
     try {
