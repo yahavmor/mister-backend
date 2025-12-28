@@ -9,6 +9,17 @@ dotenv.config()
 
 const app = express()
 
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'https://mistoy-frontend.onrender.com'
+    ],
+    credentials: true
+  })
+)
+
 app.use(cookieParser())
 app.use(express.json())
 
@@ -22,37 +33,9 @@ app.use(session({
         collectionName: 'sessions'
     }),
     cookie: {
-        secure: true,        // חובה בפרודקשן
-        sameSite: 'none',    // חובה כדי לשלוח קוקי בין דומיינים
+        secure: true,
+        sameSite: 'none',
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7 // שבוע
+        maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
-
-app.use(
-  cors({
-    origin: [
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'https://mistoy-frontend.onrender.com'
-    ],
-    credentials: true
-  })
-)
-
-import { authRoutes } from './api/auth/auth.routes.js'
-import { userRoutes } from './api/user/user.routes.js'
-import { toyRoutes } from './api/toy/toy.routes.js'
-import { reviewRoutes } from './api/review/review.routes.js'
-
-app.use('/api/auth', authRoutes)
-app.use('/api/user', userRoutes)
-app.use('/api/toy', toyRoutes)
-app.use('/api/review', reviewRoutes)
-
-const port = process.env.PORT || 3030
-console.log('ENV:', process.env.NODE_ENV)
-
-app.listen(port, () => {
-  console.log('Backend running on port:', port)
-})
