@@ -9,6 +9,7 @@ dotenv.config()
 
 const app = express()
 
+app.set('trust proxy', 1) 
 app.use(
   cors({
     origin: [
@@ -24,22 +25,23 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(session({
-    secret: process.env.SECRET || 'supersecret123',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI,
-        dbName: process.env.DB_NAME,
-        collectionName: 'sessions'
-    }),
-    cookie: {
-        secure: true,
-        sameSite: 'none',
-        httpOnly: true,
-        path: '/',              
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
+  secret: process.env.SECRET || 'supersecret123',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    dbName: process.env.DB_NAME,
+    collectionName: 'sessions'
+  }),
+  cookie: {
+    secure: true,
+    sameSite: 'none',
+    httpOnly: true,
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  }
 }))
+
 
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
