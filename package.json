@@ -1,38 +1,41 @@
 {
-    "name": "server",
-    "version": "1.0.0",
-    "description": "production ready server",
-    "main": "server.js",
-    "type": "module",
-    "scripts": {
-        "dev": "cross-env NODE_ENV=development nodemon server.js",
-        "start": "cross-env NODE_ENV=production node server.js"
-    },
-    "author": "Me",
-    "license": "ISC",
-    "devDependencies": {
-        "@types/node": "^20.14.10",
-        "nodemon": "^3.1.4"
-    },
-    "dependencies": {
-        "bcrypt": "^5.1.1",
-        "connect-mongo": "^6.0.0",
-        "cookie-parser": "^1.4.7",
-        "cors": "^2.8.5",
-        "cross-env": "^10.1.0",
-        "cryptr": "^6.3.0",
-        "dotenv": "^17.2.3",
-        "express": "^5.2.1",
-        "express-session": "^1.18.2",
-        "mongodb": "^6.21.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/yahavmor/mister-backend.git"
-    },
-    "keywords": [],
-    "bugs": {
-        "url": "https://github.com/yahavmor/mister-backend/issues"
-    },
-    "homepage": "https://github.com/yahavmor/mister-backend#readme"
+  "name": "server",
+  "version": "1.0.0",
+  "description": "production ready server",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "start": "cross-env NODE_ENV=production node server.js"
+  },
+  "author": "Me",
+  "license": "ISC",
+  "engines": {
+    "node": "18.x"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "cross-env": "^10.1.0",
+    "cryptr": "^6.3.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "mongodb": "^6.21.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yahavmor/mister-backend.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/yahavmor/mister-backend/issues"
+  },
+  "homepage": "https://github.com/yahavmor/mister-backend#readme"
 }
