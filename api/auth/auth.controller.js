@@ -8,16 +8,17 @@ export async function login(req, res) {
         const user = await authService.login(username, password)
         if (!user) return res.status(401).send({ err: 'Invalid credentials' })
 
-        // שמירת המשתמש בסשן
         req.session.user = {
             _id: user._id,
             fullname: user.fullname,
             isAdmin: user.isAdmin
         }
 
-        logger.info('User logged in:', req.session.user)
+        req.session.save(() => {
+            logger.info('User logged in:', req.session.user)
+            res.json(req.session.user)
+        })
 
-        res.json(req.session.user)
     } catch (err) {
         logger.error('Failed to Login ' + err)
         res.status(401).send({ err: 'Failed to Login' })
@@ -33,14 +34,16 @@ export async function signup(req, res) {
 
         const user = await authService.login(username, password)
 
-        // שמירת המשתמש בסשן
         req.session.user = {
             _id: user._id,
             fullname: user.fullname,
             isAdmin: user.isAdmin
         }
 
-        res.json(req.session.user)
+        req.session.save(() => {
+            res.json(req.session.user)
+        })
+
     } catch (err) {
         logger.error('Failed to signup ' + err)
         res.status(500).send({ err: 'Failed to signup' })

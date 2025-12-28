@@ -36,10 +36,10 @@ app.use(session({
         secure: true,
         sameSite: 'none',
         httpOnly: true,
+        path: '/',              
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
-
 
 import { authRoutes } from './api/auth/auth.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
