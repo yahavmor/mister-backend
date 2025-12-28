@@ -39,3 +39,21 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
+
+
+import { authRoutes } from './api/auth/auth.routes.js'
+import { userRoutes } from './api/user/user.routes.js'
+import { toyRoutes } from './api/toy/toy.routes.js'
+import { reviewRoutes } from './api/review/review.routes.js'
+
+app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
+app.use('/api/toy', toyRoutes)
+app.use('/api/review', reviewRoutes)
+
+const port = process.env.PORT || 3030
+console.log('ENV:', process.env.NODE_ENV)
+
+app.listen(port, () => {
+  console.log('Backend running on port:', port)
+})
