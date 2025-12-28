@@ -6,18 +6,18 @@ export async function login(req, res) {
 
     try {
         const user = await authService.login(username, password)
-        const loginToken = authService.getLoginToken(user)
+        if (!user) return res.status(401).send({ err: 'Invalid credentials' })
 
-        logger.info('User login:', user)
+        // שמירת המשתמש בסשן
+        req.session.user = {
+            _id: user._id,
+            fullname: user.fullname,
+            isAdmin: user.isAdmin
+        }
 
-        res.cookie('loginToken', loginToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            path: '/',
-        })
+        logger.info('User logged in:', req.session.user)
 
-        res.json(user)
+        res.json(req.session.user)
     } catch (err) {
         logger.error('Failed to Login ' + err)
         res.status(401).send({ err: 'Failed to Login' })
@@ -32,16 +32,15 @@ export async function signup(req, res) {
         logger.debug(`auth.route - new account created: ${JSON.stringify(account)}`)
 
         const user = await authService.login(username, password)
-        const loginToken = authService.getLoginToken(user)
 
-        res.cookie('loginToken', loginToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            path: '/',
-        })
+        // שמירת המשתמש בסשן
+        req.session.user = {
+            _id: user._id,
+            fullname: user.fullname,
+            isAdmin: user.isAdmin
+        }
 
-        res.json(user)
+        res.json(req.session.user)
     } catch (err) {
         logger.error('Failed to signup ' + err)
         res.status(500).send({ err: 'Failed to signup' })
@@ -50,14 +49,14 @@ export async function signup(req, res) {
 
 export async function logout(req, res) {
     try {
-        res.clearCookie('loginToken', {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            path: '/',
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid', {
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+            })
+            res.send({ msg: 'Logged out successfully' })
         })
-
-        res.send({ msg: 'Logged out successfully' })
     } catch (err) {
         res.status(500).send({ err: 'Failed to logout' })
     }
