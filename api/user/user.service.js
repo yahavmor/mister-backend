@@ -15,13 +15,12 @@ export const userService = {
 
 async function query(filterBy = {}) {
 	const criteria = _buildCriteria(filterBy)
-    
+
 	try {
 		const collection = await dbService.getCollection('user')
 		var users = await collection.find(criteria).sort({ nickname: -1 }).toArray()
 		users = users.map(user => {
 			delete user.password
-			user.isHappy = true
 			user.createdAt = user._id.getTimestamp()
 			return user
 		})
@@ -65,13 +64,12 @@ async function remove(userId) {
 }
 
 async function update(user) {
+	console.log(user)
 	try {
-		// peek only updatable fields!
 		const userToSave = {
 			_id: ObjectId.createFromHexString(user._id),
 			username: user.username,
 			fullname: user.fullname,
-			score: user.score,
 		}
 		const collection = await dbService.getCollection('user')
 		await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
