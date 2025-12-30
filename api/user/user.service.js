@@ -85,10 +85,10 @@ async function add(user) {
     try {
         const existUser = await getByUsername(user.username)
         if (existUser) throw new Error('Username taken')
-        const hashedPassword = await bcrypt.hash(user.password, 10)
+
         const userToAdd = {
             username: user.username,
-            password: hashedPassword,
+            password: user.password, 
             fullname: user.fullname,
             createdAt: Date.now(),
         }
@@ -103,6 +103,7 @@ async function add(user) {
         throw err
     }
 }
+
 
 
 function _buildCriteria(filterBy) {
