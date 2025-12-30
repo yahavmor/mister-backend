@@ -31,7 +31,7 @@ async function query(filterBy = {}) {
         }
 
         if (filterBy.labels && filterBy.labels.length > 0) {
-            criteria.labels = { $all: filterBy.labels }
+            criteria.labels = { $in: filterBy.labels }
         }
 
         const collection = await dbService.getCollection('toy')

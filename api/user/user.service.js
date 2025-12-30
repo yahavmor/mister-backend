@@ -64,7 +64,6 @@ async function remove(userId) {
 }
 
 async function update(user) {
-	console.log(user)
 	try {
 		const userToSave = {
 			_id: ObjectId.createFromHexString(user._id),
@@ -80,26 +79,31 @@ async function update(user) {
 	}
 }
 
-async function add(user) {
-	try {
-		// Validate that there are no such user:
-		const existUser = await getByUsername(user.username)
-		if (existUser) throw new Error('Username taken')
+import bcrypt from 'bcrypt'
 
-		// peek only updatable fields!
-		const userToAdd = {
-			username: user.username,
-			password: user.password,
-			fullname: user.fullname,
-		}
-		const collection = await dbService.getCollection('user')
-		await collection.insertOne(userToAdd)
-		return userToAdd
-	} catch (err) {
-		logger.error('cannot insert user', err)
-		throw err
-	}
+async function add(user) {
+    try {
+        const existUser = await getByUsername(user.username)
+        if (existUser) throw new Error('Username taken')
+        const hashedPassword = await bcrypt.hash(user.password, 10)
+        const userToAdd = {
+            username: user.username,
+            password: hashedPassword,
+            fullname: user.fullname,
+            createdAt: Date.now(),
+        }
+
+        const collection = await dbService.getCollection('user')
+        await collection.insertOne(userToAdd)
+        delete userToAdd.password
+        return userToAdd
+
+    } catch (err) {
+        logger.error('cannot insert user', err)
+        throw err
+    }
 }
+
 
 function _buildCriteria(filterBy) {
 	const criteria = {}
