@@ -4,12 +4,22 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import { createServer } from 'http'
+
+import { setupSocketAPI } from './services/socket.service.js'
+
+import { authRoutes } from './api/auth/auth.routes.js'
+import { userRoutes } from './api/user/user.routes.js'
+import { toyRoutes } from './api/toy/toy.routes.js'
+import { reviewRoutes } from './api/review/review.routes.js'
 
 dotenv.config()
 
 const app = express()
+const server = createServer(app)
 
-app.set('trust proxy', 1) 
+// CORS
+app.set('trust proxy', 1)
 app.use(
   cors({
     origin: [
@@ -24,38 +34,40 @@ app.use(
 app.use(cookieParser())
 app.use(express.json())
 
-app.use(session({
-  secret: process.env.SECRET || 'supersecret123',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    dbName: process.env.DB_NAME,
-    collectionName: 'sessions'
-  }),
-  cookie: {
-    secure: true,
-    sameSite: 'none',
-    httpOnly: true,
-    path: '/',
-    maxAge: 1000 * 60 * 60 * 24 * 7
-  }
-}))
+// SESSION
+app.use(
+  session({
+    secret: process.env.SECRET || 'supersecret123',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      dbName: process.env.DB_NAME,
+      collectionName: 'sessions'
+    }),
+    cookie: {
+      secure: true,
+      sameSite: 'none',
+      httpOnly: true,
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  })
+)
 
-
-import { authRoutes } from './api/auth/auth.routes.js'
-import { userRoutes } from './api/user/user.routes.js'
-import { toyRoutes } from './api/toy/toy.routes.js'
-import { reviewRoutes } from './api/review/review.routes.js'
-
+// API ROUTES
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/toy', toyRoutes)
 app.use('/api/review', reviewRoutes)
 
-const port = process.env.PORT || 3030
-console.log('ENV:', process.env.NODE_ENV)
+// SOCKET.IO
+setupSocketAPI(server)
 
-app.listen(port, () => {
+// START SERVER
+const port = process.env.PORT || 3030
+server.listen(port, () => {
   console.log('Backend running on port:', port)
 })
+console.log('LOADED SERVER.JS')
+

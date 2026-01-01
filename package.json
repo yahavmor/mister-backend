@@ -10,16 +10,13 @@
   },
   "author": "Me",
   "license": "ISC",
-
   "engines": {
     "node": "20.x"
   },
-
   "devDependencies": {
     "@types/node": "^20.14.10",
     "nodemon": "^3.1.4"
   },
-
   "dependencies": {
     "bcrypt": "^5.1.1",
     "connect-mongo": "^6.0.0",
@@ -28,13 +25,11 @@
     "cross-env": "^10.1.0",
     "cryptr": "^6.3.0",
     "dotenv": "^17.2.3",
-
     "express": "4.18.2",
-
     "express-session": "^1.18.2",
-    "mongodb": "^6.21.0"
+    "mongodb": "^6.21.0",
+    "socket.io": "^4.8.3"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yahavmor/mister-backend.git"
