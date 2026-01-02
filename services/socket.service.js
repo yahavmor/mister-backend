@@ -15,7 +15,6 @@ export function setupSocketAPI(httpServer) {
     }
   })
 
-  // שמירת היסטוריה לפי topic
   const chatHistory = {}
 
   gIo.on('connection', socket => {
@@ -35,7 +34,6 @@ export function setupSocketAPI(httpServer) {
       logger.info(`Socket ${socket.id} user cleared`)
     })
 
-    // שינוי topic
     socket.on('chat-set-topic', topic => {
       if (socket.myTopic === topic) return
 
@@ -48,30 +46,24 @@ export function setupSocketAPI(httpServer) {
       socket.myTopic = topic
       logger.info(`Socket ${socket.id} joined topic ${topic}`)
 
-      // אם אין היסטוריה — ניצור מערך ריק
       if (!chatHistory[topic]) chatHistory[topic] = []
 
-      // שולחים למשתמש את ההיסטוריה
       socket.emit('chat-history', chatHistory[topic])
     })
     socket.on('chat-clear-topic', ({ topic }) => {
     console.log('CLEARING HISTORY FOR TOPIC:', topic)
-    chatHistory[topic] = []   // מוחק את כל ההודעות של החדר
+    chatHistory[topic] = []   
 
-      // שולח היסטוריה ריקה רק למי שביקש
       socket.emit('chat-history', [])
     })
 
-    // קבלת הודעה חדשה
     socket.on('chat-send-msg', msg => {
       const topic = socket.myTopic
       if (!topic) return
 
-      // שמירה בהיסטוריה
       if (!chatHistory[topic]) chatHistory[topic] = []
       chatHistory[topic].push(msg)
 
-      // שידור לכל מי שבחדר
       gIo.to(topic).emit('chat-add-msg', msg)
     })
   })
