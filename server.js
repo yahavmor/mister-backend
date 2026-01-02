@@ -18,7 +18,6 @@ dotenv.config()
 const app = express()
 const server = createServer(app)
 
-// CORS
 app.set('trust proxy', 1)
 app.use(
   cors({
@@ -34,7 +33,6 @@ app.use(
 app.use(cookieParser())
 app.use(express.json())
 
-// SESSION
 app.use(
   session({
     secret: process.env.SECRET || 'supersecret123',
@@ -55,16 +53,13 @@ app.use(
   })
 )
 
-// API ROUTES
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/toy', toyRoutes)
 app.use('/api/review', reviewRoutes)
 
-// SOCKET.IO
 setupSocketAPI(server)
 
-// START SERVER
 const port = process.env.PORT || 3030
 server.listen(port, () => {
   console.log('Backend running on port:', port)

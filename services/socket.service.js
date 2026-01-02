@@ -1,4 +1,3 @@
-// socket.service.js
 import { Server } from 'socket.io'
 import { logger } from './logger.service.js'
 
@@ -15,6 +14,9 @@ export function setupSocketAPI(httpServer) {
       credentials: true
     }
   })
+
+  // שמירת היסטוריה לפי topic
+  const chatHistory = {}
 
   gIo.on('connection', socket => {
     logger.info(`Socket connected [id: ${socket.id}]`)
@@ -33,6 +35,7 @@ export function setupSocketAPI(httpServer) {
       logger.info(`Socket ${socket.id} user cleared`)
     })
 
+    // שינוי topic
     socket.on('chat-set-topic', topic => {
       if (socket.myTopic === topic) return
 
@@ -44,33 +47,48 @@ export function setupSocketAPI(httpServer) {
       socket.join(topic)
       socket.myTopic = topic
       logger.info(`Socket ${socket.id} joined topic ${topic}`)
+
+      // אם אין היסטוריה — ניצור מערך ריק
+      if (!chatHistory[topic]) chatHistory[topic] = []
+
+      // שולחים למשתמש את ההיסטוריה
+      socket.emit('chat-history', chatHistory[topic])
+    })
+    socket.on('chat-clear-topic', ({ topic }) => {
+    console.log('CLEARING HISTORY FOR TOPIC:', topic)
+    chatHistory[topic] = []   // מוחק את כל ההודעות של החדר
+
+      // שולח היסטוריה ריקה רק למי שביקש
+      socket.emit('chat-history', [])
     })
 
+    // קבלת הודעה חדשה
     socket.on('chat-send-msg', msg => {
-      logger.info(`Message from ${socket.id} to topic ${socket.myTopic}`)
-      gIo.to(socket.myTopic).emit('chat-add-msg', msg)
-    })
+      const topic = socket.myTopic
+      if (!topic) return
 
-    socket.on('user-watch', userId => {
-      socket.join('watching:' + userId)
-      logger.info(`Socket ${socket.id} watching user ${userId}`)
+      // שמירה בהיסטוריה
+      if (!chatHistory[topic]) chatHistory[topic] = []
+      chatHistory[topic].push(msg)
+
+      // שידור לכל מי שבחדר
+      gIo.to(topic).emit('chat-add-msg', msg)
     })
   })
 }
 
-// Emit to room or all
+
+
 export function emitTo({ type, data, label }) {
   if (label) gIo.to('watching:' + label).emit(type, data)
   else gIo.emit(type, data)
 }
 
-// Emit to specific user
 export async function emitToUser({ type, data, userId }) {
   const socket = await _getUserSocket(userId)
   if (socket) socket.emit(type, data)
 }
 
-// Broadcast except user
 export async function broadcast({ type, data, room = null, userId }) {
   const excludedSocket = await _getUserSocket(userId)
 
@@ -89,4 +107,5 @@ async function _getUserSocket(userId) {
   const sockets = await gIo.fetchSockets()
   return sockets.find(s => s.userId === userId)
 }
+
 console.log('LOADED SOCKET SERVICE')
