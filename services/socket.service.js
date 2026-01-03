@@ -66,6 +66,14 @@ export function setupSocketAPI(httpServer) {
 
       gIo.to(topic).emit('chat-add-msg', msg)
     })
+    socket.on('user-typing', data => {
+    setTimeout(() => {
+        socket.broadcast.emit('user-typing', data)
+    }, 300) 
+})
+
+
+
   })
 }
 
