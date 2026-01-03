@@ -1,5 +1,7 @@
 import { toyService } from './toy.service.js'
 import { logger } from '../../services/logger.service.js'
+import { notifyAdminUpdate } from '../../services/socket.service.js'
+
 
 export async function getToys(req, res) {
     try {
@@ -38,6 +40,7 @@ export async function addToy(req, res) {
         toy.owner = loggedinUser
         const addedToy = await toyService.add(toy)
         res.json(addedToy)
+        notifyAdminUpdate(`Admin added a new toy: ${addedToy._id}`)
     } catch (err) {
         logger.error('Failed to add toy', err)
         res.status(500).send({ err: 'Failed to add toy' })
@@ -49,6 +52,7 @@ export async function updateToy(req, res) {
         const toy = { ...req.body, _id: req.params.id }
         const updatedToy = await toyService.update(toy)
         res.json(updatedToy)
+        notifyAdminUpdate(`Admin updated toy: ${updatedToy.name}`)
     } catch (err) {
         logger.error('Failed to update toy', err)
         res.status(500).send({ err: 'Failed to update toy' })
@@ -60,6 +64,8 @@ export async function removeToy(req, res) {
         const toyId = req.params.id
         const deletedCount = await toyService.remove(toyId)
         res.send(`${deletedCount} toys removed`)
+        notifyAdminUpdate(`Admin removed toy: ${toyId}`)
+
     } catch (err) {
         logger.error('Failed to remove toy', err)
         res.status(500).send({ err: 'Failed to remove toy' })
@@ -77,7 +83,7 @@ export async function addToyMsg(req, res) {
         }
 
         const savedMsg = await toyService.addToyMsg(toyId, msg)
-        res.send(savedMsg)
+        res.send(savedMsg)    
     } catch (err) {
         console.log('Failed to add message', err)
         res.status(500).send({ err: 'Failed to add message' })
@@ -94,6 +100,7 @@ export async function removeToyMsg(req, res) {
 
         const removed = await toyService.removeToyMsg(toyId, msgId)
         res.send({ msg: 'Message removed', removed })
+        notifyAdminUpdate(`Admin removed a message from the toy (id: ${toyId})`)
     } catch (err) {
         logger.error('Failed to remove toy msg', err)
         res.status(500).send({ err: 'Failed to remove toy msg' })

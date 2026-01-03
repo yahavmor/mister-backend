@@ -14,6 +14,7 @@ export function setupSocketAPI(httpServer) {
       credentials: true
     }
   })
+  
 
   const chatHistory = {}
 
@@ -71,12 +72,9 @@ export function setupSocketAPI(httpServer) {
         socket.broadcast.emit('user-typing', data)
     }, 300) 
 })
-
-
-
   })
 }
-
+export { gIo }
 
 
 export function emitTo({ type, data, label }) {
@@ -102,6 +100,11 @@ export async function broadcast({ type, data, room = null, userId }) {
     gIo.emit(type, data)
   }
 }
+export function notifyAdminUpdate(msg) {
+    if (!gIo) return
+    gIo.emit('admin-shop-update', { msg })
+}
+
 
 async function _getUserSocket(userId) {
   const sockets = await gIo.fetchSockets()
