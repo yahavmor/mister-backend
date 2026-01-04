@@ -14,7 +14,7 @@ export function setupSocketAPI(httpServer) {
     methods: ["GET", "POST"],
     credentials: true
   },
-  transports: ["websocket"]   
+  transports: ["websocket", "polling"]   
   })
 
   
